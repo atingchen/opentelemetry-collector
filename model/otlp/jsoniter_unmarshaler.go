@@ -105,7 +105,7 @@ func readResourceSpans(iter *jsoniter.Iterator) *otlptrace.ResourceSpans {
 				}
 				return true
 			})
-		case "instrumentationLibrarySpans", "instrumentation_library_spans":
+		case "instrumentationLibrarySpans", "instrumentation_library_spans", "scopeSpans", "scope_spans":
 			iter.ReadArrayCB(func(iter *jsoniter.Iterator) bool {
 				rs.InstrumentationLibrarySpans = append(rs.InstrumentationLibrarySpans,
 					readInstrumentationLibrarySpans(iter))
