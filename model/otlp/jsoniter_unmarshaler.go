@@ -126,7 +126,7 @@ func readInstrumentationLibrarySpans(iter *jsoniter.Iterator) *otlptrace.Instrum
 
 	iter.ReadObjectCB(func(iter *jsoniter.Iterator, f string) bool {
 		switch f {
-		case "instrumentationLibrary", "instrumentation_library":
+		case "instrumentationLibrary", "instrumentation_library", "scope":
 			iter.ReadObjectCB(func(iter *jsoniter.Iterator, f string) bool {
 				switch f {
 				case "name":
