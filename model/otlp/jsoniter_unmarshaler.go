@@ -16,14 +16,11 @@ package otlp // import "go.opentelemetry.io/collector/model/otlp"
 
 import (
 	"encoding/base64"
-	"errors"
 	"fmt"
 
 	jsoniter "github.com/json-iterator/go"
 	"go.opentelemetry.io/collector/model/internal"
 	otlpcommon "go.opentelemetry.io/collector/model/internal/data/protogen/common/v1"
-	otlplogs "go.opentelemetry.io/collector/model/internal/data/protogen/logs/v1"
-	otlpmetrics "go.opentelemetry.io/collector/model/internal/data/protogen/metrics/v1"
 	otlptrace "go.opentelemetry.io/collector/model/internal/data/protogen/trace/v1"
 	"go.opentelemetry.io/collector/model/pdata"
 )
@@ -48,16 +45,6 @@ type jsonIterUnmarshaler struct {
 
 func newJSONIterUnmarshaler() *jsonIterUnmarshaler {
 	return &jsonIterUnmarshaler{}
-}
-
-func (d *jsonIterUnmarshaler) UnmarshalLogs(buf []byte) (pdata.Logs, error) {
-	ld := &otlplogs.LogsData{}
-	return pdata.LogsFromInternalRep(internal.LogsFromOtlp(ld)), errors.New("unimplemented")
-}
-
-func (d *jsonIterUnmarshaler) UnmarshalMetrics(buf []byte) (pdata.Metrics, error) {
-	md := &otlpmetrics.MetricsData{}
-	return pdata.MetricsFromInternalRep(internal.MetricsFromOtlp(md)), errors.New("unimplemented")
 }
 
 func (d *jsonIterUnmarshaler) UnmarshalTraces(buf []byte) (pdata.Traces, error) {

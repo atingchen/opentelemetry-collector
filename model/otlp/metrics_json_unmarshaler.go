@@ -25,7 +25,7 @@ import (
 	"go.opentelemetry.io/collector/model/internal/json"
 )
 
-func (d *jsonUnmarshaler) UnmarshalMetrics(buf []byte) (pdata.Metrics, error) {
+func (d *jsonIterUnmarshaler) UnmarshalMetrics(buf []byte) (pdata.Metrics, error) {
 	iter := jsoniter.ConfigFastest.BorrowIterator(buf)
 	defer jsoniter.ConfigFastest.ReturnIterator(iter)
 	md := d.readMetricsData(iter)
@@ -35,7 +35,7 @@ func (d *jsonUnmarshaler) UnmarshalMetrics(buf []byte) (pdata.Metrics, error) {
 	return pdata.MetricsFromInternalRep(internal.MetricsFromOtlp(md)), nil
 }
 
-func (d *jsonUnmarshaler) readMetricsData(iter *jsoniter.Iterator) *otlpmetrics.MetricsData {
+func (d *jsonIterUnmarshaler) readMetricsData(iter *jsoniter.Iterator) *otlpmetrics.MetricsData {
 	md := &otlpmetrics.MetricsData{}
 	iter.ReadObjectCB(func(iter *jsoniter.Iterator, f string) bool {
 		switch f {
@@ -52,7 +52,7 @@ func (d *jsonUnmarshaler) readMetricsData(iter *jsoniter.Iterator) *otlpmetrics.
 	return md
 }
 
-func (d *jsonUnmarshaler) readResourceMetrics(iter *jsoniter.Iterator) *otlpmetrics.ResourceMetrics {
+func (d *jsonIterUnmarshaler) readResourceMetrics(iter *jsoniter.Iterator) *otlpmetrics.ResourceMetrics {
 	rs := &otlpmetrics.ResourceMetrics{}
 	iter.ReadObjectCB(func(iter *jsoniter.Iterator, f string) bool {
 		switch f {
@@ -87,7 +87,7 @@ func (d *jsonUnmarshaler) readResourceMetrics(iter *jsoniter.Iterator) *otlpmetr
 	return rs
 }
 
-func (d *jsonUnmarshaler) readScopeMetrics(iter *jsoniter.Iterator) *otlpmetrics.InstrumentationLibraryMetrics {
+func (d *jsonIterUnmarshaler) readScopeMetrics(iter *jsoniter.Iterator) *otlpmetrics.InstrumentationLibraryMetrics {
 	ils := &otlpmetrics.InstrumentationLibraryMetrics{}
 	iter.ReadObjectCB(func(iter *jsoniter.Iterator, f string) bool {
 		switch f {
@@ -108,7 +108,7 @@ func (d *jsonUnmarshaler) readScopeMetrics(iter *jsoniter.Iterator) *otlpmetrics
 	return ils
 }
 
-func (d *jsonUnmarshaler) readMetric(iter *jsoniter.Iterator) *otlpmetrics.Metric {
+func (d *jsonIterUnmarshaler) readMetric(iter *jsoniter.Iterator) *otlpmetrics.Metric {
 	sp := &otlpmetrics.Metric{}
 	iter.ReadObjectCB(func(iter *jsoniter.Iterator, f string) bool {
 		switch f {
@@ -136,7 +136,7 @@ func (d *jsonUnmarshaler) readMetric(iter *jsoniter.Iterator) *otlpmetrics.Metri
 	return sp
 }
 
-func (d *jsonUnmarshaler) readSumMetric(iter *jsoniter.Iterator) *otlpmetrics.Metric_Sum {
+func (d *jsonIterUnmarshaler) readSumMetric(iter *jsoniter.Iterator) *otlpmetrics.Metric_Sum {
 	data := &otlpmetrics.Metric_Sum{
 		Sum: &otlpmetrics.Sum{},
 	}
@@ -161,7 +161,7 @@ func (d *jsonUnmarshaler) readSumMetric(iter *jsoniter.Iterator) *otlpmetrics.Me
 	return data
 }
 
-func (d *jsonUnmarshaler) readGaugeMetric(iter *jsoniter.Iterator) *otlpmetrics.Metric_Gauge {
+func (d *jsonIterUnmarshaler) readGaugeMetric(iter *jsoniter.Iterator) *otlpmetrics.Metric_Gauge {
 	data := &otlpmetrics.Metric_Gauge{
 		Gauge: &otlpmetrics.Gauge{},
 	}
@@ -182,7 +182,7 @@ func (d *jsonUnmarshaler) readGaugeMetric(iter *jsoniter.Iterator) *otlpmetrics.
 	return data
 }
 
-func (d *jsonUnmarshaler) readHistogramMetric(iter *jsoniter.Iterator) *otlpmetrics.Metric_Histogram {
+func (d *jsonIterUnmarshaler) readHistogramMetric(iter *jsoniter.Iterator) *otlpmetrics.Metric_Histogram {
 	data := &otlpmetrics.Metric_Histogram{
 		Histogram: &otlpmetrics.Histogram{},
 	}
@@ -205,7 +205,7 @@ func (d *jsonUnmarshaler) readHistogramMetric(iter *jsoniter.Iterator) *otlpmetr
 	return data
 }
 
-func (d *jsonUnmarshaler) readExponentialHistogramMetric(iter *jsoniter.Iterator) *otlpmetrics.Metric_ExponentialHistogram {
+func (d *jsonIterUnmarshaler) readExponentialHistogramMetric(iter *jsoniter.Iterator) *otlpmetrics.Metric_ExponentialHistogram {
 	data := &otlpmetrics.Metric_ExponentialHistogram{
 		ExponentialHistogram: &otlpmetrics.ExponentialHistogram{},
 	}
@@ -227,7 +227,7 @@ func (d *jsonUnmarshaler) readExponentialHistogramMetric(iter *jsoniter.Iterator
 	return data
 }
 
-func (d *jsonUnmarshaler) readSummaryMetric(iter *jsoniter.Iterator) *otlpmetrics.Metric_Summary {
+func (d *jsonIterUnmarshaler) readSummaryMetric(iter *jsoniter.Iterator) *otlpmetrics.Metric_Summary {
 	data := &otlpmetrics.Metric_Summary{
 		Summary: &otlpmetrics.Summary{},
 	}
@@ -247,7 +247,7 @@ func (d *jsonUnmarshaler) readSummaryMetric(iter *jsoniter.Iterator) *otlpmetric
 	return data
 }
 
-func (d *jsonUnmarshaler) readExemplar(iter *jsoniter.Iterator) otlpmetrics.Exemplar {
+func (d *jsonIterUnmarshaler) readExemplar(iter *jsoniter.Iterator) otlpmetrics.Exemplar {
 	exemplar := otlpmetrics.Exemplar{}
 	iter.ReadObjectCB(func(iter *jsoniter.Iterator, f string) bool {
 		switch f {
@@ -282,7 +282,7 @@ func (d *jsonUnmarshaler) readExemplar(iter *jsoniter.Iterator) otlpmetrics.Exem
 	return exemplar
 }
 
-func (d *jsonUnmarshaler) readNumberDataPoint(iter *jsoniter.Iterator) *otlpmetrics.NumberDataPoint {
+func (d *jsonIterUnmarshaler) readNumberDataPoint(iter *jsoniter.Iterator) *otlpmetrics.NumberDataPoint {
 	point := &otlpmetrics.NumberDataPoint{}
 	iter.ReadObjectCB(func(iter *jsoniter.Iterator, f string) bool {
 		switch f {
@@ -318,7 +318,7 @@ func (d *jsonUnmarshaler) readNumberDataPoint(iter *jsoniter.Iterator) *otlpmetr
 	return point
 }
 
-func (d *jsonUnmarshaler) readHistogramDataPoint(iter *jsoniter.Iterator) *otlpmetrics.HistogramDataPoint {
+func (d *jsonIterUnmarshaler) readHistogramDataPoint(iter *jsoniter.Iterator) *otlpmetrics.HistogramDataPoint {
 	point := &otlpmetrics.HistogramDataPoint{}
 	iter.ReadObjectCB(func(iter *jsoniter.Iterator, f string) bool {
 		switch f {
@@ -360,7 +360,7 @@ func (d *jsonUnmarshaler) readHistogramDataPoint(iter *jsoniter.Iterator) *otlpm
 	return point
 }
 
-func (d *jsonUnmarshaler) readExponentialHistogramDataPoint(iter *jsoniter.Iterator) *otlpmetrics.ExponentialHistogramDataPoint {
+func (d *jsonIterUnmarshaler) readExponentialHistogramDataPoint(iter *jsoniter.Iterator) *otlpmetrics.ExponentialHistogramDataPoint {
 	point := &otlpmetrics.ExponentialHistogramDataPoint{}
 	iter.ReadObjectCB(func(iter *jsoniter.Iterator, f string) bool {
 		switch f {
@@ -430,7 +430,7 @@ func (d *jsonUnmarshaler) readExponentialHistogramDataPoint(iter *jsoniter.Itera
 	return point
 }
 
-func (d *jsonUnmarshaler) readSummaryDataPoint(iter *jsoniter.Iterator) *otlpmetrics.SummaryDataPoint {
+func (d *jsonIterUnmarshaler) readSummaryDataPoint(iter *jsoniter.Iterator) *otlpmetrics.SummaryDataPoint {
 	point := &otlpmetrics.SummaryDataPoint{}
 	iter.ReadObjectCB(func(iter *jsoniter.Iterator, f string) bool {
 		switch f {
@@ -462,7 +462,7 @@ func (d *jsonUnmarshaler) readSummaryDataPoint(iter *jsoniter.Iterator) *otlpmet
 	return point
 }
 
-func (d *jsonUnmarshaler) readQuantileValue(iter *jsoniter.Iterator) *otlpmetrics.SummaryDataPoint_ValueAtQuantile {
+func (d *jsonIterUnmarshaler) readQuantileValue(iter *jsoniter.Iterator) *otlpmetrics.SummaryDataPoint_ValueAtQuantile {
 	point := &otlpmetrics.SummaryDataPoint_ValueAtQuantile{}
 	iter.ReadObjectCB(func(iter *jsoniter.Iterator, f string) bool {
 		switch f {
@@ -478,6 +478,6 @@ func (d *jsonUnmarshaler) readQuantileValue(iter *jsoniter.Iterator) *otlpmetric
 	return point
 }
 
-func (d *jsonUnmarshaler) readAggregationTemporality(iter *jsoniter.Iterator) otlpmetrics.AggregationTemporality {
+func (d *jsonIterUnmarshaler) readAggregationTemporality(iter *jsoniter.Iterator) otlpmetrics.AggregationTemporality {
 	return otlpmetrics.AggregationTemporality(json.ReadEnumValue(iter, otlpmetrics.AggregationTemporality_value))
 }

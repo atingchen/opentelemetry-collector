@@ -16,11 +16,12 @@ package otlp // import "go.opentelemetry.io/collector/model/otlp"
 
 import (
 	"bytes"
+	otlplogs "go.opentelemetry.io/collector/model/internal/data/protogen/logs/v1"
+	otlpmetrics "go.opentelemetry.io/collector/model/internal/data/protogen/metrics/v1"
 
 	"github.com/gogo/protobuf/jsonpb"
 
 	"go.opentelemetry.io/collector/model/internal"
-	otlplogs "go.opentelemetry.io/collector/model/internal/data/protogen/logs/v1"
 	otlptrace "go.opentelemetry.io/collector/model/internal/data/protogen/trace/v1"
 	"go.opentelemetry.io/collector/model/pdata"
 )
@@ -62,4 +63,12 @@ func (d *jsonUnmarshaler) UnmarshalTraces(buf []byte) (pdata.Traces, error) {
 		return pdata.Traces{}, err
 	}
 	return pdata.TracesFromInternalRep(internal.TracesFromOtlp(td)), nil
+}
+
+func (d *jsonUnmarshaler) UnmarshalMetrics(buf []byte) (pdata.Metrics, error) {
+	td := &otlpmetrics.MetricsData{}
+	if err := d.delegate.Unmarshal(bytes.NewReader(buf), td); err != nil {
+		return pdata.Metrics{}, err
+	}
+	return pdata.MetricsFromInternalRep(internal.MetricsFromOtlp(td)), nil
 }
